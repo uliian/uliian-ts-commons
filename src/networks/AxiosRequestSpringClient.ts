@@ -1,9 +1,9 @@
 import { HttpClient, RestResponse } from "./SpringInterface";
-import axios, { AxiosInstance,  AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 
 export class AxiosRequestSpringClient implements HttpClient {
   private axiosInstance: AxiosInstance
-  constructor(private baseUrl: string, private tokenProvider: () => [string, string | undefined | null], requestInterceptor?: (((value: InternalAxiosRequestConfig<any>) => InternalAxiosRequestConfig<any> | Promise<InternalAxiosRequestConfig<any>>))[], responseInterceptor?: (((value: AxiosResponse<any, any>) => AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>))[], errorHandles?: (error:any) => void) {
+  constructor(private baseUrl: string, private tokenProvider: () => [string, string | undefined | null], requestInterceptor?: (((value: InternalAxiosRequestConfig<any>) => InternalAxiosRequestConfig<any> | Promise<InternalAxiosRequestConfig<any>>))[], responseInterceptor?: (((value: AxiosResponse<any, any>) => AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>))[], errorHandles?: (error: any) => void) {
     this.axiosInstance = axios.create({
       baseURL: this.baseUrl,
     })
@@ -47,13 +47,13 @@ export class AxiosRequestSpringClient implements HttpClient {
     }).then(x => x.data)
   }
 
-  async downloadFile(fileName:string,requestConfig: {
+  async downloadFile(fileName: string, requestConfig: {
     method: string;
     url: string;
     queryParams?: any;
-    data?: any;    
-  }){
-    const res = await this.request<Blob>({...requestConfig, responseType: 'blob'})
+    data?: any;
+  }) {
+    const res = await this.request<Blob>({ ...requestConfig, responseType: 'blob' })
     const blob = new Blob([res]);   //注意拿到的是数据流！！
     const objectURL = URL.createObjectURL(blob);
     let btn = document.createElement('a');

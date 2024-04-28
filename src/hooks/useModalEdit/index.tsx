@@ -1,4 +1,4 @@
-import {OpType} from '../utils';
+import {OpType} from './utils';
 import { useRef, useState } from 'react';
 
 export type Input<T> = { id: string | number } | { value: T };
@@ -31,6 +31,9 @@ export default function useModalEdit<V>(): ShowModalEditProps<V> {
     } else {
       if (input === undefined) {
         throw new Error('当OpType为Edit时必须传入input参数');
+      }
+      if (!('id' in input) && !('value' in input)){
+        throw new Error('当OpType为Edit时必须传入input.id 或 input.value 参数');
       }
       if ('value' in input) {
         setValue(input.value);
