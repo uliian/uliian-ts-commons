@@ -1,7 +1,7 @@
-import { OpType } from '@/services/utils';
+import {OpType} from '../utils';
 import { useRef, useState } from 'react';
 
-type Input<T> = { id: string | number } | { value: T };
+export type Input<T> = { id: string | number } | { value: T };
 export type ShowModalEditProps<V> = {
   id?: string | number;
   value?: V;

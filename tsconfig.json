@@ -23,7 +23,12 @@
       "noPropertyAccessFromIndexSignature": true,
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
-      "jsx": "react"
+      "jsx": "react",
+      "baseUrl": "./",
+      "moduleResolution": "node",
+      "paths": {
+        "@babel/parser": ["./node_modules/@babel/parser"]
+      }
     }
   }
   

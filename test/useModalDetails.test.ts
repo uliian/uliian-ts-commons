@@ -5,7 +5,7 @@ test('useModalDetails', () => {
     const { result } = renderHook(() => useModalDetails());
 
     act(() => {
-        result.current.openModal({}, 1)
+        result.current.openModal({id:1})
     });
 
     expect(result.current.id).toBe(1);

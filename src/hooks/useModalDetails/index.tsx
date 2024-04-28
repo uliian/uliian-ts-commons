@@ -1,21 +1,28 @@
 import { useState } from 'react';
+import { Input } from '../useModalEdit';
 
-export type ShowModalProps = {
+export type ShowModalProps<V> = {
   id?: string | number;
-  value?: any;
+  value?: V;
   open?: boolean;
   onCancel: () => void;
 };
 
-function useModalDetails() {
+function useModalDetails<V>() {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState();
+  const [value, setValue] = useState<V>();
   const [id, setId] = useState<string | number>();
 
-  const openModal = (value?: any, id?: string | number) => {
+  const openModal = (input:Input<V>) => {
     setOpen(true);
-    setValue(value);
-    setId(id);
+    if (input === undefined) {
+      throw new Error('当OpType为Edit时必须传入input参数');
+    }
+    if ('value' in input) {
+      setValue(input.value!!);
+    } else {
+      setId(input.id);
+    }
   };
 
   const closeModal = () => {

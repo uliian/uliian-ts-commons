@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { DependencyList, useEffect, useState } from 'react';
 
 type OffestPageCondition = {
   offset: number | string;
@@ -12,13 +12,14 @@ type OffsetResult<T> = {
 };
 
 type Options = {
-  dependencys: any[];
+  dependencys: DependencyList;
   pageSize?: number;
   ready?: () => boolean;
 };
 
 export default function useOffsetPage<T>(
   service: (page: OffestPageCondition) => Promise<OffsetResult<T>>,
+  params:Record<string,any>,
   options: Options,
 ) {
   const [offset, setOffset] = useState<number | string>();
@@ -28,11 +29,10 @@ export default function useOffsetPage<T>(
   const [loading, setLoading] = useState(false);
 
   const run = () => {
-    setLoading(true);
     if (ready?.() ?? true) {
-      service({ offset: offset ?? '0', pageSize: pageSize ?? 20 }).then((result) => {
+      service({ ...params, offset: offset ?? '0', pageSize: pageSize ?? 20 }).then((result) => {
         setOffset(result.offset);
-        setRecords([...records, ...result.records]);
+        setRecords(preValue =>[...preValue, ...result.records]);
         setHasMore(result.hasMore);
         setLoading(false);
       });
@@ -45,8 +45,8 @@ export default function useOffsetPage<T>(
     setOffset(undefined);
     setRecords([]);
     setHasMore(false);
-    run();
-  }, dependencys);
+    run()
+  }, [...dependencys]);
 
   return {
     offset,
@@ -54,5 +54,6 @@ export default function useOffsetPage<T>(
     hasMore,
     loading,
     getMore,
+    run
   };
 }

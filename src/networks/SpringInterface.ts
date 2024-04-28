@@ -8,9 +8,21 @@ export interface HttpClient {
     data?: any;
     copyFn?: (data: R) => R;
   }) => RestResponse<R>;
+
+  downloadFile(fileName:string,requestConfig: {
+    method: string;
+    url: string;
+    queryParams?: any;
+    data?: any;    
+  }):Promise<void>
 }
 
-export type AntdPage<T> {
+export interface AntdPageCondition{
+  current: number;
+  pageSize: number;
+}
+
+export type AntdPage<T> ={
   data: T[];
   success: boolean;
   total: number;
