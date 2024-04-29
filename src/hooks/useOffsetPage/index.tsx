@@ -12,7 +12,7 @@ type OffsetResult<T> = {
 };
 
 type Options = {
-  dependencys: DependencyList;
+  dependencys?: DependencyList;
   pageSize?: number;
   ready?: () => boolean;
 };
@@ -46,14 +46,13 @@ export default function useOffsetPage<T>(
     setRecords([]);
     setHasMore(false);
     run()
-  }, [...dependencys]);
+  }, [params,...dependencys??[]]);
 
   return {
     offset,
     records,
     hasMore,
     loading,
-    getMore,
-    run
+    getMore
   };
 }
