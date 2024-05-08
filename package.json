@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "test": "jest",
+    "test": "jest --silent=false --verbose",
     "coverage":"yarn run test -- --coverage"
   },
   "author": "",
