@@ -37,7 +37,7 @@ const CustomComponent = (props:ShowModalProps<V>)=>{
 const showEditProps = useModalEdit<V>()
 
 const CustomComponent = (props:ShowModalEditProps<V>)=>{
-    const {value, opType, open, onCancel, onSubmit} = props
+    const {id,value, opType, open, onCancel, onSubmit} = props
     {/* 根据你传入的是value还是id自行获取数据填充 */ }
     <Modal open={open} onCancel={onCancel}>
         <Form onFinish={(v)=>{/* TODO */ onSubmit()}}>
