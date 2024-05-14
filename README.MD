@@ -46,7 +46,12 @@ const CustomComponent = (props:ShowModalEditProps<V>)=>{
     </Modal>
 }
 
-<Button onClick={()=>openModal(OpType.Edit,{id:xxxx},()=>{ref.current?.reload?.()})}/>
+<Button onClick={()=>openModal(OpType.Edit,{id:xxxx},()=>{ref.current?.reload?.()})}>编辑（传入ID）</Button>
+<Button onClick={()=>openModal(OpType.Edit,{value:obj},()=>{ref.current?.reload?.()})}>编辑（传入Value）</Button>
+
+
+<Button onClick={()=>openModal(OpType.Create,undefined,()=>{ref.current?.reload?.()})}>新增</Button>
+
 
 
 <CustomComponent {...showDetailsProps}/>
