@@ -1,12 +1,16 @@
 {
   "name": "uliian-ts-commons",
-  "version": "0.0.1",
+  "version": "0.0.4",
   "description": "uliian's ts dev tools",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "test": "jest --silent=false --verbose",
-    "coverage":"yarn run test -- --coverage"
+    "coverage": "yarn run test -- --coverage",
+    "publish": "tsc && npm config set proxy http://127.0.0.1:7890 && npm publish --registry=https://registry.npmjs.org/ && npm config delete proxy"
   },
   "author": "",
   "license": "ISC",

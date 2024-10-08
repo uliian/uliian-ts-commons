@@ -3,7 +3,10 @@ import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 
 
 export class AxiosRequestSpringClient implements HttpClient {
   private axiosInstance: AxiosInstance
-  constructor(private baseUrl: string, private tokenProvider: () => [string, string | undefined | null], requestInterceptor?: (((value: InternalAxiosRequestConfig<any>) => InternalAxiosRequestConfig<any> | Promise<InternalAxiosRequestConfig<any>>))[], responseInterceptor?: (((value: AxiosResponse<any, any>) => AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>))[], errorHandles?: (error: any) => void) {
+  constructor(private baseUrl: string, private tokenProvider: () => [string, string | undefined | null], 
+  requestInterceptor?: (((value: InternalAxiosRequestConfig<any>) => InternalAxiosRequestConfig<any>))[], 
+  responseInterceptor?: (((value: AxiosResponse<any, any>) => AxiosResponse<any, any> | Promise<AxiosResponse<any, any>>))[], 
+  private errorHandles?: (error: any) => void) {
     this.axiosInstance = axios.create({
       baseURL: this.baseUrl,
     })
@@ -14,9 +17,14 @@ export class AxiosRequestSpringClient implements HttpClient {
     this.axiosInstance.interceptors.request.use(config => {
       const tokenData = this.tokenProvider()
       if (tokenData[1]) {
-        config.headers[tokenData[0]] = tokenData[1]
+        // config.headers[tokenData[0]] = tokenData[1]
+        config.headers[tokenData[0]]= tokenData[1]
       }
-      return config
+      let cfg = config
+      for (let reqInter of requestInterceptor??[]){
+        cfg = reqInter(cfg)
+      }
+      return cfg
     })
 
     for (const rspHandle of responseInterceptor ?? []) {
@@ -27,10 +35,11 @@ export class AxiosRequestSpringClient implements HttpClient {
       return response
     }, error => {
       errorHandles?.(error)
+      return Promise.reject(error)
     })
   }
 
-  request<R>(requestConfig: {
+  async request<R>(requestConfig: {
     method: string;
     url: string;
     queryParams?: any;
@@ -38,13 +47,20 @@ export class AxiosRequestSpringClient implements HttpClient {
     copyFn?: ((data: R) => R) | undefined;
     responseType?: "arraybuffer" | "blob" | "document" | "json" | "text" | "stream";
   }): RestResponse<R> {
-    return axios.request({
-      method: requestConfig.method,
-      url: requestConfig.url,
-      params: requestConfig.queryParams,
-      data: requestConfig.data,
-      responseType: requestConfig.responseType
-    }).then(x => x.data)
+    try{
+      const rsp = await this.axiosInstance.request({
+        method: requestConfig.method,
+        url:  requestConfig.url,
+        params: requestConfig.queryParams,
+        data: requestConfig.data,
+        responseType: requestConfig.responseType
+      })      
+
+      return rsp?.data
+    }catch(ex:any){
+      this.errorHandles?.(ex)
+      throw ex
+    }
   }
 
   async downloadFile(fileName: string, requestConfig: {

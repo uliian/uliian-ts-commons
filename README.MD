@@ -81,11 +81,39 @@ const {
     records,
     hasMore,
     loading,
-    getMore} = useOffsetPage((offestPageCondition)=>request(offsetPageCondition),queryParams,{})
+    getMore,
+    reload} = useOffsetPage((offestPageCondition)=>request(offsetPageCondition),queryParams,{})
 ```
 
 queryParams为查询的其他查询参数，最终会和offsetPageCondition一起作为查询字符串进行处理，同时，该值产生变化将触发列表、分页条件重置。options中，有ready方法，如果存在该方法，则需要在该方法执行结果为true后才会发起请求，pageSize也可以在options中进行配置。另外在options中，有dependencys属性，该属性用于条件刷新。
 
 ## 网络请求相关
 
+`AxiosRequestSpringClient`封装了基于Axios的HttpClient实现，该实现为了匹配[typescript-generator](https://github.com/vojtechhabarta/typescript-generator)项目的基础操作。
+使用方法：找个地方
+```typescript
+import { message } from 'antd';
+import { AxiosRequestSpringClient } from 'uliian-ts-commons';
+import { history } from 'umi';
+
+export const axiosHttpClient = new AxiosRequestSpringClient(
+  API_URL, //这里是后端API的base_url
+  () => ['x-token', localStorage.getItem('syl-token')], //这里是设置token所在httpheader 中 key和token value的地方
+  undefined,  //这里是请求拦截器
+  undefined,  //这里是响应拦截器
+  (error) => {  //这里是设置错误处理的地方
+    message.error(
+      `${error.message}-${error.response?.data?.code ?? '0'}-${error.response?.data?.msg ?? ''}`,
+    );
+    if (error.response.status === 401) {
+      if (history.location.pathname !== '/user/login') {
+        history.replace('/user/login');
+      }
+    }
+  },
+);
+```
+
 ## 集合帮助方法
+`CollectionHerlper`中封装了多叉树的处理：
+包括多叉树的查找、映射、过滤操作

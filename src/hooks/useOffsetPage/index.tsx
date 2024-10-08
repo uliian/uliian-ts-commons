@@ -23,6 +23,7 @@ export type UseOffsetPageResult<T> = {
     hasMore: boolean,
     loading: boolean,
     getMore: () => Promise<void>,
+    reload:()=>Promise<void>,
 }
 
 export default function useOffsetPage<T>(
@@ -52,11 +53,18 @@ export default function useOffsetPage<T>(
 
   const getMore = run;
 
+  const init = () => {
+    setLoading(true)
+    return service({ ...params, offset: '0', pageSize: pageSize ?? 20 }).then((result) => {
+      setOffset(result.offset);
+      setRecords(result.records);
+      setHasMore(result.hasMore);
+      setLoading(false);
+    });
+  };
+
   useEffect(() => {
-    setOffset("0");
-    setRecords([]);
-    setHasMore(false);
-    run()
+    init()
   }, [...(dependencys??[])]);
 
   return {
@@ -64,6 +72,9 @@ export default function useOffsetPage<T>(
     records,
     hasMore,
     loading,
-    getMore
+    getMore,
+    reload() {
+      return init();
+    },
   };
 }
