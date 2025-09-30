@@ -1,5 +1,6 @@
 import { HttpClient, RestResponse } from "./SpringInterface";
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import {downloadBlob} from "./NetworkUtils"
 
 export class AxiosRequestSpringClient implements HttpClient {
   private axiosInstance: AxiosInstance
@@ -70,12 +71,12 @@ export class AxiosRequestSpringClient implements HttpClient {
     data?: any;
   }) {
     const res = await this.request<Blob>({ ...requestConfig, responseType: 'blob' })
-    const blob = new Blob([res]);   //注意拿到的是数据流！！
-    const objectURL = URL.createObjectURL(blob);
-    let btn = document.createElement('a');
-    btn.download = fileName; //文件类型
-    btn.href = objectURL;
-    btn.click();
-    URL.revokeObjectURL(objectURL);
+    // const objectURL = URL.createObjectURL(res);
+    // let btn = document.createElement('a');
+    // btn.download = fileName; //文件类型
+    // btn.href = objectURL;
+    // btn.click();
+    // URL.revokeObjectURL(objectURL);
+    downloadBlob(res, fileName);
   }
 }

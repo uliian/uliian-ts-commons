@@ -1,6 +1,6 @@
 {
   "name": "uliian-ts-commons",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "uliian's ts dev tools",
   "main": "dist/index.js",
   "files": [
