@@ -1,5 +1,5 @@
 export interface IMultiTreeItem<T> {
-    children: T[];
+    children?: T[];
 }
 
 
@@ -17,8 +17,8 @@ const CollectionHerlper = {
             if (condition(item)) {
                 return item;
             }
-            if (item.children !== null && item.children!.length > 0) {
-                let result = this.findInTreeFirst(item.children, condition);
+            if ((item.children?.length ?? 0) > 0) {
+                let result = this.findInTreeFirst(item.children??[], condition);
                 if (result) {
                     return result;
                 }
@@ -42,8 +42,8 @@ const CollectionHerlper = {
                 if (condition(item)) {
                     result.push(item)
                 }
-                if (item.children !== null && item.children!.length > 0) {
-                    findInTreeWithResult(item.children, result);
+                if ((item.children?.length ?? 0) > 0) {
+                    findInTreeWithResult(item.children??[], result);
                 }
             }
         }
@@ -67,8 +67,8 @@ const CollectionHerlper = {
         for (let item of tree) {
             const newItem = mapFun(item);
             result.push(newItem);
-            if (item.children !== null && item.children!.length > 0) {
-                let childrenResult = this.treeMap(item.children, mapFun);
+            if ( (item.children?.length ?? 0) > 0) {
+                let childrenResult = this.treeMap(item.children??[], mapFun);
                 newItem.children = childrenResult;
             }
         }
