@@ -1,3 +1,4 @@
+import { IMultiTreeItem } from '../src/CollectionHelper'
 import {CollectionHelper}  from '../src/index'
 
 
