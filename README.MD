@@ -117,3 +117,42 @@ export const axiosHttpClient = new AxiosRequestSpringClient(
 ## 集合帮助方法
 `CollectionHerlper`中封装了多叉树的处理：
 包括多叉树的查找、映射、过滤操作
+
+### 传统用法（兼容）
+```ts
+import CollectionHelper from 'uliian-ts-commons/dist/CollectionHelper';
+
+const found = CollectionHelper.findInTreeFirst(tree, x => x.id === 3);
+const all = CollectionHelper.findInTree(tree, x => x.enabled);
+const mapped = CollectionHelper.treeMap(tree, x => ({ ...x, label: `#${x.label}`, children: [] }));
+const filtered = CollectionHelper.treeFilter(
+  tree,
+  node => node.children,
+  (node, children) => { node.children = children; },
+  node => node.enabled,
+);
+```
+
+### 链式用法（新增，链式调用风格）
+```ts
+import { collection } from 'uliian-ts-commons/dist/CollectionHelper';
+
+const result = collection(tree)
+  .findInTree(x => x.enabled)
+  .mapTree(x => ({ ...x, label: `#${x.label}` }))
+  .filterTree(x => x.label !== '#skip')
+  .value();
+
+const first = collection(tree).findInTreeFirst(x => x.id === 9).value();
+const direct = collection(tree).first(x => x.enabled); // 便捷直取
+
+// 使用自定义 children 字段名
+const foundBySubs = collection(treeWithSubs, { childrenKey: 'subs' })
+  .findInTreeFirst(x => x.id === 2)
+  .value();
+```
+
+说明：
+- 旧的默认导出 `CollectionHerlper` 保持签名不变；新的 `collection` 为不可变链式包装。
+- 链式方法除 `first`/`value` 外都返回新实例，`value()` 为终结器。
+- `childrenKey`/`getChildren`/`setChildren` 可配置以适配不同树结构。
